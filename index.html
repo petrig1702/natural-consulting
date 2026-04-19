@@ -1,694 +1,413 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="de" class="h-full">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KI-Modellvergleich M&auml;rz 2026</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0a0a0f;--bg2:#12121a;--bg3:#1a1a26;--bg4:#22222e;
-  --accent:#FAEF70;--accent2:#e8dd5e;
-  --text:#e8e8f0;--text2:#a0a0b8;--text3:#6a6a80;
-  --green:#34d399;--red:#f87171;--orange:#fbbf24;--blue:#60a5fa;--purple:#a78bfa;
-  --radius:12px;--radius-sm:8px;
-}
-html{scroll-behavior:smooth}
-body{
-  font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);
-  line-height:1.6;overflow-x:hidden;
-}
-h1,h2,h3,h4,h5,h6,.mono{font-family:'JetBrains Mono',monospace}
-.container{max-width:1200px;margin:0 auto;padding:0 24px}
-a{color:var(--accent);text-decoration:none}
-
-/* NAV */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  background:rgba(10,10,15,.85);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(250,239,112,.08);
-  padding:16px 0;transition:all .3s;
-}
-nav .container{display:flex;justify-content:space-between;align-items:center}
-nav .logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--accent)}
-nav ul{list-style:none;display:flex;gap:24px}
-nav ul li a{color:var(--text2);font-size:.85rem;font-weight:500;transition:color .2s}
-nav ul li a:hover{color:var(--accent)}
-
-/* HERO */
-.hero{
-  min-height:100vh;display:flex;align-items:center;justify-content:center;
-  text-align:center;padding:120px 24px 80px;position:relative;overflow:hidden;
-}
-.hero::before{
-  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
-  background:radial-gradient(ellipse at 50% 30%,rgba(250,239,112,.06) 0%,transparent 60%);
-  animation:pulse 8s ease-in-out infinite;
-}
-@keyframes pulse{0%,100%{opacity:.6;transform:scale(1)}50%{opacity:1;transform:scale(1.05)}}
-.hero-content{position:relative;z-index:1;max-width:800px}
-.hero h1{
-  font-size:clamp(2rem,5vw,3.5rem);font-weight:700;
-  background:linear-gradient(135deg,var(--accent),#fff,var(--accent));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;margin-bottom:24px;line-height:1.2;
-}
-.hero .subtitle{font-size:clamp(1rem,2vw,1.25rem);color:var(--text2);max-width:600px;margin:0 auto 40px;opacity:0;animation:fadeUp .8s .3s forwards}
-.hero .badge{
-  display:inline-block;padding:8px 20px;border:1px solid rgba(250,239,112,.3);
-  border-radius:24px;font-size:.8rem;color:var(--accent);font-weight:500;
-  margin-bottom:32px;opacity:0;animation:fadeUp .8s .1s forwards;
-}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.scroll-cta{
-  opacity:0;animation:fadeUp .8s .6s forwards;
-  display:inline-flex;align-items:center;gap:8px;
-  padding:14px 32px;background:var(--accent);color:#0a0a0f;
-  border-radius:8px;font-weight:600;font-size:.95rem;
-  transition:transform .2s,box-shadow .2s;cursor:pointer;border:none;
-  font-family:'Inter',sans-serif;
-}
-.scroll-cta:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(250,239,112,.25)}
-
-/* SECTIONS */
-section{padding:80px 0}
-.section-header{text-align:center;margin-bottom:60px}
-.section-header h2{font-size:clamp(1.5rem,3vw,2.2rem);margin-bottom:12px;color:var(--text)}
-.section-header p{color:var(--text2);max-width:600px;margin:0 auto;font-size:.95rem}
-.section-header .accent-line{width:60px;height:3px;background:var(--accent);margin:16px auto 0;border-radius:2px}
-
-/* TABLE */
-.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--bg4);background:var(--bg2)}
-table{width:100%;border-collapse:collapse;min-width:900px;font-size:.88rem}
-thead{background:var(--bg3)}
-th{padding:16px 14px;text-align:left;font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text2);white-space:nowrap}
-td{padding:14px;border-top:1px solid var(--bg3);white-space:nowrap}
-tr:hover td{background:rgba(250,239,112,.02)}
-.model-name{font-weight:700;font-family:'JetBrains Mono',monospace;font-size:.9rem}
-.cell-best{background:rgba(52,211,153,.12);color:var(--green);font-weight:600}
-.cell-worst{background:rgba(248,113,113,.08);color:var(--red)}
-.cell-mid{color:var(--text)}
-.provider-tag{
-  display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;
-  font-weight:600;margin-left:6px;vertical-align:middle;
-}
-.tag-anthropic{background:rgba(167,139,250,.15);color:var(--purple)}
-.tag-openai{background:rgba(96,165,250,.15);color:var(--blue)}
-.tag-google{background:rgba(52,211,153,.15);color:var(--green)}
-.tag-meta{background:rgba(248,113,113,.15);color:var(--red)}
-.tag-xai{background:rgba(250,239,112,.15);color:var(--accent)}
-
-/* CHARTS */
-.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
-@media(max-width:768px){.charts-grid{grid-template-columns:1fr}}
-.chart-card{
-  background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);
-  padding:24px;
-}
-.chart-card h3{font-size:1rem;margin-bottom:16px;color:var(--text)}
-canvas{width:100%!important;height:auto!important}
-
-/* TABS */
-.tab-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:32px;justify-content:center}
-.tab-btn{
-  padding:10px 20px;border:1px solid var(--bg4);background:var(--bg2);
-  color:var(--text2);border-radius:var(--radius-sm);cursor:pointer;
-  font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:500;
-  transition:all .2s;
-}
-.tab-btn:hover{border-color:var(--accent);color:var(--accent)}
-.tab-btn.active{background:var(--accent);color:#0a0a0f;border-color:var(--accent)}
-.tab-content{display:none;animation:fadeUp .4s forwards}
-.tab-content.active{display:block}
-.rec-card{
-  background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);
-  padding:32px;margin-bottom:20px;transition:border-color .2s;
-}
-.rec-card:hover{border-color:rgba(250,239,112,.3)}
-.rec-card .winner{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:700;color:var(--accent);margin-bottom:8px}
-.rec-card .reason{color:var(--text2);font-size:.92rem;line-height:1.7}
-.rec-card .runner-up{margin-top:12px;font-size:.85rem;color:var(--text3)}
-
-/* CALCULATOR */
-.calc-box{
-  background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--radius);
-  padding:40px;max-width:800px;margin:0 auto;
-}
-.calc-box label{font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--text2);display:block;margin-bottom:8px}
-.slider-row{display:flex;align-items:center;gap:16px;margin-bottom:32px}
-.slider-row input[type=range]{
-  flex:1;-webkit-appearance:none;appearance:none;height:6px;
-  background:var(--bg4);border-radius:3px;outline:none;
-}
-.slider-row input[type=range]::-webkit-slider-thumb{
-  -webkit-appearance:none;appearance:none;width:22px;height:22px;
-  background:var(--accent);border-radius:50%;cursor:pointer;
-  box-shadow:0 0 12px rgba(250,239,112,.3);
-}
-.slider-row input[type=range]::-moz-range-thumb{
-  width:22px;height:22px;background:var(--accent);border-radius:50%;cursor:pointer;border:none;
-}
-.slider-val{
-  font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;
-  color:var(--accent);min-width:80px;text-align:right;
-}
-.cost-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
-.cost-item{
-  background:var(--bg3);border-radius:var(--radius-sm);padding:20px;text-align:center;
-  border:1px solid var(--bg4);transition:border-color .2s;
-}
-.cost-item:hover{border-color:rgba(250,239,112,.2)}
-.cost-item .cost-model{font-family:'JetBrains Mono',monospace;font-size:.82rem;color:var(--text2);margin-bottom:8px}
-.cost-item .cost-val{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--accent)}
-.cost-item .cost-detail{font-size:.75rem;color:var(--text3);margin-top:6px}
-
-/* FOOTER */
-footer{border-top:1px solid var(--bg3);padding:40px 0;text-align:center;color:var(--text3);font-size:.82rem}
-
-/* ANIMATE ON SCROLL */
-.fade-in{opacity:0;transform:translateY(30px);transition:opacity .6s,transform .6s}
-.fade-in.visible{opacity:1;transform:translateY(0)}
-
-/* RESPONSIVE */
-@media(max-width:768px){
-  nav ul{display:none}
-  section{padding:60px 0}
-  .calc-box{padding:24px}
-  .slider-row{flex-direction:column;align-items:stretch}
-  .slider-val{text-align:left}
-}
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="container">
-    <div class="logo">&gt;_ KI-Vergleich</div>
-    <ul>
-      <li><a href="#vergleich">Vergleich</a></li>
-      <li><a href="#charts">Charts</a></li>
-      <li><a href="#empfehlung">Empfehlung</a></li>
-      <li><a href="#rechner">Kostenrechner</a></li>
-    </ul>
-  </div>
-</nav>
-
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-content">
-    <div class="badge">Stand: M&auml;rz 2026</div>
-    <h1>KI-Modellvergleich<br>M&auml;rz 2026</h1>
-    <p class="subtitle">Die f&uuml;nf leistungsst&auml;rksten Large Language Models im direkten Vergleich &mdash; Benchmarks, Preise, St&auml;rken und der richtige Einsatz f&uuml;r jeden Use Case.</p>
-    <button class="scroll-cta" onclick="document.getElementById('vergleich').scrollIntoView({behavior:'smooth'})">Vergleich ansehen &#8595;</button>
-  </div>
-</section>
-
-<!-- VERGLEICHSTABELLE -->
-<section id="vergleich">
-  <div class="container">
-    <div class="section-header fade-in">
-      <h2>Vergleichstabelle</h2>
-      <p>Pricing, Context Window und Key-Benchmarks der Top-5-Modelle</p>
-      <div class="accent-line"></div>
-    </div>
-    <div class="table-wrap fade-in">
-      <table id="compTable">
-        <thead>
-          <tr>
-            <th>Modell</th>
-            <th>Input / 1M</th>
-            <th>Output / 1M</th>
-            <th>Context</th>
-            <th>SWE-Bench</th>
-            <th>GPQA</th>
-            <th>ARC-AGI-2</th>
-            <th>OSWorld</th>
-            <th>BrowseComp</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-</section>
-
-<!-- CHARTS -->
-<section id="charts" style="background:var(--bg2)">
-  <div class="container">
-    <div class="section-header fade-in">
-      <h2>Visuelle Analyse</h2>
-      <p>Radar- und Balkendiagramm f&uuml;r den schnellen &Uuml;berblick</p>
-      <div class="accent-line"></div>
-    </div>
-    <div class="charts-grid fade-in">
-      <div class="chart-card">
-        <h3>Radar Chart &mdash; Benchmark-Profil</h3>
-        <canvas id="radarChart" width="500" height="500"></canvas>
-      </div>
-      <div class="chart-card">
-        <h3>Bar Chart &mdash; SWE-Bench Verified</h3>
-        <canvas id="barChart" width="500" height="400"></canvas>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- EMPFEHLUNG -->
-<section id="empfehlung">
-  <div class="container">
-    <div class="section-header fade-in">
-      <h2>Empfehlung pro Use Case</h2>
-      <p>Welches Modell passt am besten zu deinem Einsatzzweck?</p>
-      <div class="accent-line"></div>
-    </div>
-    <div class="fade-in">
-      <div class="tab-nav" id="tabNav"></div>
-      <div id="tabPanels"></div>
-    </div>
-  </div>
-</section>
-
-<!-- KOSTENRECHNER -->
-<section id="rechner" style="background:var(--bg2)">
-  <div class="container">
-    <div class="section-header fade-in">
-      <h2>Kostenrechner</h2>
-      <p>Was kosten 1.000 Coding-Tasks mit jedem Modell?</p>
-      <div class="accent-line"></div>
-    </div>
-    <div class="calc-box fade-in">
-      <label for="tokenSlider">Durchschnittliche Tokens pro Task (Input + Output)</label>
-      <div class="slider-row">
-        <input type="range" id="tokenSlider" min="500" max="50000" value="8000" step="500">
-        <span class="slider-val" id="tokenVal">8.000</span>
-      </div>
-      <div class="cost-grid" id="costGrid"></div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="container">
-    <p>&copy; 2026 KI-Modellvergleich &mdash; Daten basierend auf offiziellen Benchmarks und Preislisten. Alle Angaben ohne Gew&auml;hr.</p>
-  </div>
-</footer>
-
-<script>
-// --- DATA ---
-var models = [
-  {
-    name: 'Claude Opus 4.6',
-    provider: 'Anthropic',
-    tag: 'tag-anthropic',
-    color: '#a78bfa',
-    inputPrice: 15,
-    outputPrice: 75,
-    context: 200000,
-    benchmarks: { swe: 72.7, gpqa: 74.9, arc: 28.1, os: 38.2, browse: 63.2 }
-  },
-  {
-    name: 'GPT-4.5',
-    provider: 'OpenAI',
-    tag: 'tag-openai',
-    color: '#60a5fa',
-    inputPrice: 75,
-    outputPrice: 150,
-    context: 128000,
-    benchmarks: { swe: 49.3, gpqa: 71.4, arc: 21.2, os: 27.6, browse: 56.8 }
-  },
-  {
-    name: 'Gemini 2.5 Pro',
-    provider: 'Google',
-    tag: 'tag-google',
-    color: '#34d399',
-    inputPrice: 1.25,
-    outputPrice: 10,
-    context: 1000000,
-    benchmarks: { swe: 63.8, gpqa: 68.9, arc: 30.5, os: 28.4, browse: 49.2 }
-  },
-  {
-    name: 'Claude Sonnet 4.6',
-    provider: 'Anthropic',
-    tag: 'tag-anthropic',
-    color: '#c4b5fd',
-    inputPrice: 3,
-    outputPrice: 15,
-    context: 200000,
-    benchmarks: { swe: 65.4, gpqa: 65.2, arc: 18.7, os: 33.5, browse: 51.7 }
-  },
-  {
-    name: 'Grok 3',
-    provider: 'xAI',
-    tag: 'tag-xai',
-    color: '#FAEF70',
-    inputPrice: 3,
-    outputPrice: 15,
-    context: 131072,
-    benchmarks: { swe: 52.1, gpqa: 66.8, arc: 16.4, os: 24.9, browse: 44.3 }
-  }
-];
-
-var benchmarkKeys = ['swe','gpqa','arc','os','browse'];
-var benchmarkLabels = ['SWE-Bench','GPQA','ARC-AGI-2','OSWorld','BrowseComp'];
-
-// --- TABLE ---
-function buildTable() {
-  var tbody = document.querySelector('#compTable tbody');
-  var best = {}, worst = {};
-  benchmarkKeys.forEach(function(k) {
-    var vals = models.map(function(m) { return m.benchmarks[k]; });
-    best[k] = Math.max.apply(null, vals);
-    worst[k] = Math.min.apply(null, vals);
-  });
-  var bestInput = Math.min.apply(null, models.map(function(m){return m.inputPrice}));
-  var worstInput = Math.max.apply(null, models.map(function(m){return m.inputPrice}));
-  var bestOutput = Math.min.apply(null, models.map(function(m){return m.outputPrice}));
-  var worstOutput = Math.max.apply(null, models.map(function(m){return m.outputPrice}));
-  var bestCtx = Math.max.apply(null, models.map(function(m){return m.context}));
-  var worstCtx = Math.min.apply(null, models.map(function(m){return m.context}));
-
-  function cls(val, bestV, worstV) {
-    if (val === bestV) return 'cell-best';
-    if (val === worstV) return 'cell-worst';
-    return 'cell-mid';
-  }
-
-  models.forEach(function(m) {
-    var tr = document.createElement('tr');
-    tr.innerHTML =
-      '<td><span class="model-name">' + m.name + '</span><span class="provider-tag ' + m.tag + '">' + m.provider + '</span></td>' +
-      '<td class="' + cls(m.inputPrice, bestInput, worstInput) + '">$' + m.inputPrice + '</td>' +
-      '<td class="' + cls(m.outputPrice, bestOutput, worstOutput) + '">$' + m.outputPrice + '</td>' +
-      '<td class="' + cls(m.context, bestCtx, worstCtx) + '">' + (m.context/1000).toFixed(0) + 'K</td>' +
-      '<td class="' + cls(m.benchmarks.swe, best.swe, worst.swe) + '">' + m.benchmarks.swe + '%</td>' +
-      '<td class="' + cls(m.benchmarks.gpqa, best.gpqa, worst.gpqa) + '">' + m.benchmarks.gpqa + '%</td>' +
-      '<td class="' + cls(m.benchmarks.arc, best.arc, worst.arc) + '">' + m.benchmarks.arc + '%</td>' +
-      '<td class="' + cls(m.benchmarks.os, best.os, worst.os) + '">' + m.benchmarks.os + '%</td>' +
-      '<td class="' + cls(m.benchmarks.browse, best.browse, worst.browse) + '">' + m.benchmarks.browse + '%</td>';
-    tbody.appendChild(tr);
-  });
-}
-
-// --- RADAR CHART ---
-function drawRadar() {
-  var canvas = document.getElementById('radarChart');
-  var ctx = canvas.getContext('2d');
-  var dpr = window.devicePixelRatio || 1;
-  canvas.width = 500 * dpr;
-  canvas.height = 500 * dpr;
-  ctx.scale(dpr, dpr);
-
-  var cx = 250, cy = 260, R = 180, n = 5;
-  var maxVals = [80, 80, 35, 45, 70];
-
-  function angle(i) { return (Math.PI * 2 * i / n) - Math.PI / 2; }
-
-  // Grid rings
-  for (var ring = 1; ring <= 4; ring++) {
-    var r = R * ring / 4;
-    ctx.beginPath();
-    for (var i = 0; i <= n; i++) {
-      var a = angle(i % n);
-      var x = cx + r * Math.cos(a);
-      var y = cy + r * Math.sin(a);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    }
-    ctx.strokeStyle = 'rgba(255,255,255,.08)';
-    ctx.lineWidth = 1;
-    ctx.stroke();
-  }
-
-  // Axis lines + labels
-  ctx.font = '11px JetBrains Mono';
-  ctx.fillStyle = '#a0a0b8';
-  ctx.textAlign = 'center';
-  benchmarkLabels.forEach(function(label, i) {
-    var a = angle(i);
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
-    ctx.strokeStyle = 'rgba(255,255,255,.1)';
-    ctx.stroke();
-    var lx = cx + (R + 28) * Math.cos(a);
-    var ly = cy + (R + 28) * Math.sin(a);
-    ctx.fillText(label, lx, ly + 4);
-  });
-
-  // Data polygons
-  models.forEach(function(m) {
-    ctx.beginPath();
-    benchmarkKeys.forEach(function(k, i) {
-      var val = m.benchmarks[k] / maxVals[i];
-      var rr = Math.min(val, 1) * R;
-      var a = angle(i);
-      var x = cx + rr * Math.cos(a);
-      var y = cy + rr * Math.sin(a);
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
-    });
-    ctx.closePath();
-    ctx.strokeStyle = m.color;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    var hex = m.color;
-    var cr = parseInt(hex.slice(1,3),16);
-    var cg = parseInt(hex.slice(3,5),16);
-    var cb = parseInt(hex.slice(5,7),16);
-    ctx.fillStyle = 'rgba(' + cr + ',' + cg + ',' + cb + ',.08)';
-    ctx.fill();
-  });
-
-  // Legend
-  ctx.font = '11px JetBrains Mono';
-  models.forEach(function(m, i) {
-    var lx = 12;
-    var ly = 18 + i * 20;
-    ctx.fillStyle = m.color;
-    ctx.fillRect(lx, ly - 8, 12, 12);
-    ctx.fillStyle = '#e8e8f0';
-    ctx.textAlign = 'left';
-    ctx.fillText(m.name, lx + 18, ly + 2);
-  });
-}
-
-// --- BAR CHART ---
-function drawBarChart() {
-  var canvas = document.getElementById('barChart');
-  var ctx = canvas.getContext('2d');
-  var dpr = window.devicePixelRatio || 1;
-  canvas.width = 500 * dpr;
-  canvas.height = 400 * dpr;
-  ctx.scale(dpr, dpr);
-
-  var W = 500, H = 400;
-  var pad = { top: 20, right: 20, bottom: 60, left: 50 };
-  var chartW = W - pad.left - pad.right;
-  var chartH = H - pad.top - pad.bottom;
-
-  var sorted = models.slice().sort(function(a, b) { return b.benchmarks.swe - a.benchmarks.swe; });
-  var maxVal = 80;
-  var barW = chartW / sorted.length - 16;
-
-  // Y axis grid
-  ctx.strokeStyle = 'rgba(255,255,255,.1)';
-  ctx.fillStyle = '#a0a0b8';
-  ctx.font = '11px JetBrains Mono';
-  ctx.textAlign = 'right';
-  for (var v = 0; v <= maxVal; v += 20) {
-    var yy = pad.top + chartH - (v / maxVal) * chartH;
-    ctx.beginPath();
-    ctx.moveTo(pad.left, yy);
-    ctx.lineTo(W - pad.right, yy);
-    ctx.stroke();
-    ctx.fillText(v + '%', pad.left - 8, yy + 4);
-  }
-
-  // Bars
-  sorted.forEach(function(m, i) {
-    var x = pad.left + i * (chartW / sorted.length) + 8;
-    var barH = (m.benchmarks.swe / maxVal) * chartH;
-    var y = pad.top + chartH - barH;
-
-    var hex = m.color;
-    var cr = parseInt(hex.slice(1,3),16);
-    var cg = parseInt(hex.slice(3,5),16);
-    var cb = parseInt(hex.slice(5,7),16);
-    var grad = ctx.createLinearGradient(x, y, x, pad.top + chartH);
-    grad.addColorStop(0, 'rgba(' + cr + ',' + cg + ',' + cb + ',.9)');
-    grad.addColorStop(1, 'rgba(' + cr + ',' + cg + ',' + cb + ',.3)');
-    ctx.fillStyle = grad;
-
-    var rr = 4;
-    ctx.beginPath();
-    ctx.moveTo(x + rr, y);
-    ctx.lineTo(x + barW - rr, y);
-    ctx.quadraticCurveTo(x + barW, y, x + barW, y + rr);
-    ctx.lineTo(x + barW, pad.top + chartH);
-    ctx.lineTo(x, pad.top + chartH);
-    ctx.lineTo(x, y + rr);
-    ctx.quadraticCurveTo(x, y, x + rr, y);
-    ctx.fill();
-
-    // Value on top
-    ctx.fillStyle = '#e8e8f0';
-    ctx.font = 'bold 12px JetBrains Mono';
-    ctx.textAlign = 'center';
-    ctx.fillText(m.benchmarks.swe + '%', x + barW / 2, y - 8);
-
-    // Label
-    ctx.save();
-    ctx.translate(x + barW / 2, pad.top + chartH + 14);
-    ctx.rotate(-Math.PI / 6);
-    ctx.font = '10px JetBrains Mono';
-    ctx.fillStyle = '#a0a0b8';
-    ctx.textAlign = 'right';
-    ctx.fillText(m.name, 0, 0);
-    ctx.restore();
-  });
-}
-
-// --- USE CASE RECOMMENDATIONS ---
-var useCases = [
-  {
-    id: 'coding',
-    label: 'Coding',
-    winner: 'Claude Opus 4.6',
-    reason: 'Mit 72.7% auf SWE-Bench Verified liegt Opus 4.6 deutlich an der Spitze. Hervorragendes Verstaendnis komplexer Codebasen, praezise Multi-File-Edits und exzellentes Debugging machen es zur ersten Wahl fuer professionelle Softwareentwicklung.',
-    runner: 'Zweitplatziert: Claude Sonnet 4.6 (65.4%) \u2014 bestes Preis-Leistungs-Verhaeltnis fuer Coding-Tasks'
-  },
-  {
-    id: 'research',
-    label: 'Research',
-    winner: 'Claude Opus 4.6',
-    reason: 'GPQA Diamond (74.9%) und BrowseComp (63.2%) zeigen: Opus 4.6 liefert die zuverlaessigsten Antworten auf PhD-Level-Fragen und kann das Web am effektivsten fuer Recherche nutzen. Ideal fuer wissenschaftliche Analysen und Deep Research.',
-    runner: 'Zweitplatziert: GPT-4.5 (GPQA 71.4%) \u2014 stark bei faktenbasiertem Reasoning'
-  },
-  {
-    id: 'agents',
-    label: 'Agents',
-    winner: 'Claude Opus 4.6',
-    reason: 'Die Kombination aus hoechster Coding-Faehigkeit, starkem Tool-Use und 200K Context macht Opus 4.6 zum besten Agenten-Backbone. Das Modell plant zuverlaessig mehrstufige Workflows und haelt den Kontext ueber lange Task-Ketten stabil.',
-    runner: 'Zweitplatziert: Gemini 2.5 Pro \u2014 1M Context ideal fuer Langzeit-Agenten mit vielen Dokumenten'
-  },
-  {
-    id: 'computer-use',
-    label: 'Computer Use',
-    winner: 'Claude Opus 4.6',
-    reason: 'Mit 38.2% auf OSWorld fuehrt Opus 4.6 bei der autonomen Computer-Bedienung. Das Modell navigiert zuverlaessig durch Desktop-UIs, fuellt Formulare aus und fuehrt mehrstufige Aufgaben in realen Betriebssystem-Umgebungen durch.',
-    runner: 'Zweitplatziert: Claude Sonnet 4.6 (33.5%) \u2014 guenstiger fuer einfachere UI-Automationen'
-  },
-  {
-    id: 'value',
-    label: 'Preis-Leistung',
-    winner: 'Gemini 2.5 Pro',
-    reason: 'Fuer nur $1.25 / $10 pro 1M Tokens bietet Gemini 2.5 Pro beeindruckende 63.8% SWE-Bench und 1M Context Window. Damit ist es das mit Abstand beste Modell, wenn Budget eine Rolle spielt \u2014 perfekt fuer High-Volume-Anwendungen.',
-    runner: 'Zweitplatziert: Claude Sonnet 4.6 ($3/$15) \u2014 staerkere Benchmarks bei moderatem Preis'
-  }
-];
-
-function buildTabs() {
-  var nav = document.getElementById('tabNav');
-  var panels = document.getElementById('tabPanels');
-  useCases.forEach(function(uc, i) {
-    var btn = document.createElement('button');
-    btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
-    btn.textContent = uc.label;
-    btn.setAttribute('data-id', uc.id);
-    btn.onclick = function() { switchTab(uc.id); };
-    nav.appendChild(btn);
-
-    var div = document.createElement('div');
-    div.className = 'tab-content' + (i === 0 ? ' active' : '');
-    div.id = 'tab-' + uc.id;
-    div.innerHTML =
-      '<div class="rec-card">' +
-        '<div class="winner">' + uc.winner + '</div>' +
-        '<div class="reason">' + uc.reason + '</div>' +
-        '<div class="runner-up">' + uc.runner + '</div>' +
-      '</div>';
-    panels.appendChild(div);
-  });
-}
-
-function switchTab(id) {
-  document.querySelectorAll('.tab-btn').forEach(function(b, i) {
-    b.classList.toggle('active', useCases[i].id === id);
-  });
-  document.querySelectorAll('.tab-content').forEach(function(p) {
-    p.classList.toggle('active', p.id === 'tab-' + id);
-  });
-}
-
-// --- COST CALCULATOR ---
-function buildCalc() {
-  var slider = document.getElementById('tokenSlider');
-  var valEl = document.getElementById('tokenVal');
-  var grid = document.getElementById('costGrid');
-
-  function update() {
-    var tokens = parseInt(slider.value);
-    valEl.textContent = tokens.toLocaleString('de-DE');
-    grid.innerHTML = '';
-
-    var inputRatio = 0.6;
-    var outputRatio = 0.4;
-    var tasks = 1000;
-
-    models.forEach(function(m) {
-      var inputTokens = tokens * inputRatio * tasks;
-      var outputTokens = tokens * outputRatio * tasks;
-      var cost = (inputTokens / 1e6) * m.inputPrice + (outputTokens / 1e6) * m.outputPrice;
-
-      var div = document.createElement('div');
-      div.className = 'cost-item';
-      div.innerHTML =
-        '<div class="cost-model">' + m.name + '</div>' +
-        '<div class="cost-val">$' + cost.toFixed(2) + '</div>' +
-        '<div class="cost-detail">' + (inputTokens/1e6).toFixed(1) + 'M in \u00b7 ' + (outputTokens/1e6).toFixed(1) + 'M out</div>';
-      grid.appendChild(div);
-    });
-  }
-
-  slider.addEventListener('input', update);
-  update();
-}
-
-// --- SCROLL ANIMATIONS ---
-function initScrollAnimations() {
-  var observer = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) {
-      if (e.isIntersecting) {
-        e.target.classList.add('visible');
-        observer.unobserve(e.target);
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Neon Boards — Trello-Klon</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Inter', 'system-ui', 'sans-serif']
+          },
+          boxShadow: {
+            neon: '0 0 30px rgba(56,189,248,.35), 0 0 80px rgba(236,72,153,.25)',
+            glass: '0 20px 60px rgba(0,0,0,.45)'
+          }
+        }
       }
-    });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.fade-in').forEach(function(el) { observer.observe(el); });
-}
+    }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <style>
+    :root {
+      --bg1: #06070f;
+      --bg2: #0d1330;
+      --bg3: #1b1140;
+      --txt: #eaf2ff;
+      --soft: rgba(255,255,255,.14);
+      --glow: #67e8f9;
+      --glow2: #f472b6;
+      --card: rgba(13, 19, 48, .45);
+      --cursor: #67e8f9;
+      --cursor-dot: #ffffff;
+    }
+    .light {
+      --bg1: #f3f7ff;
+      --bg2: #d8ebff;
+      --bg3: #fff4e6;
+      --txt: #111827;
+      --soft: rgba(17,24,39,.16);
+      --glow: #2563eb;
+      --glow2: #ec4899;
+      --card: rgba(255,255,255,.65);
+      --cursor: #111827;
+      --cursor-dot: #2563eb;
+    }
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      color: var(--txt);
+      background: radial-gradient(1200px 800px at 10% 10%, var(--bg2), transparent 60%),
+                  radial-gradient(1000px 700px at 90% 80%, var(--bg3), transparent 55%),
+                  linear-gradient(130deg, var(--bg1), #070b1f 45%, #120f2d 100%);
+      background-size: 180% 180%;
+      animation: shiftBg 18s ease-in-out infinite;
+      cursor: none;
+    }
+    @keyframes shiftBg { 0%,100%{background-position: 0% 50%;} 50%{background-position: 100% 50%;} }
+    .glass {
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      backdrop-filter: blur(16px) saturate(150%);
+      border: 1px solid var(--soft);
+      box-shadow: 0 12px 50px rgba(0,0,0,.35);
+    }
+    .neon-border {
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 40%, transparent), 0 0 32px color-mix(in srgb, var(--glow2) 30%, transparent);
+    }
+    .board-col { min-width: 310px; max-width: 310px; }
+    .card-tilt {
+      transform-style: preserve-3d;
+      transition: transform .18s ease, box-shadow .2s ease;
+    }
+    .card-tilt:hover { box-shadow: 0 12px 28px rgba(0,0,0,.35), 0 0 24px color-mix(in srgb, var(--glow) 24%, transparent); }
+    .dragging {
+      transform: scale(1.03) rotate(1.5deg) !important;
+      box-shadow: 0 16px 40px rgba(0,0,0,.5), 0 0 40px color-mix(in srgb, var(--glow2) 35%, transparent);
+      opacity: .88;
+      z-index: 50;
+    }
+    .cursor-ring, .cursor-dot {
+      position: fixed; left: 0; top: 0; pointer-events: none; z-index: 200;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: screen;
+    }
+    .cursor-ring {
+      width: 34px; height: 34px; border-radius: 9999px;
+      border: 1px solid color-mix(in srgb, var(--cursor) 70%, transparent);
+      box-shadow: 0 0 22px color-mix(in srgb, var(--cursor) 45%, transparent);
+    }
+    .cursor-dot {
+      width: 8px; height: 8px; border-radius: 9999px;
+      background: var(--cursor-dot);
+      box-shadow: 0 0 16px color-mix(in srgb, var(--cursor-dot) 80%, transparent);
+    }
+    .confetti {
+      position: fixed; width: 8px; height: 12px; top: 0; left: 0; z-index: 300; pointer-events: none;
+    }
+    .markdown p { margin-bottom: .5rem; }
+  </style>
+</head>
+<body class="h-full overflow-hidden">
+  <div class="cursor-ring"></div><div class="cursor-dot"></div>
+  <div class="h-full flex flex-col">
+    <header class="glass neon-border mx-4 mt-4 rounded-2xl px-4 py-3 flex items-center justify-between gap-4">
+      <div>
+        <h1 class="text-xl md:text-2xl font-black tracking-tight">Neon Boards</h1>
+        <p class="text-xs opacity-75">Single-File Trello-Klon • Animation-first • localStorage</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 text-xs">
+        <select id="themeSel" class="glass rounded-xl px-2 py-1"></select>
+        <button id="modeBtn" class="glass rounded-xl px-3 py-1.5">Dark/Light</button>
+        <button id="templateBtn" class="glass rounded-xl px-3 py-1.5">Template</button>
+        <button id="newBoardBtn" class="glass rounded-xl px-3 py-1.5">+ Board</button>
+        <button id="exportBtn" class="glass rounded-xl px-3 py-1.5">Export</button>
+        <label class="glass rounded-xl px-3 py-1.5 cursor-pointer">Import<input id="importInput" type="file" accept="application/json" class="hidden"></label>
+      </div>
+    </header>
 
-// --- INIT ---
-document.addEventListener('DOMContentLoaded', function() {
-  buildTable();
-  drawRadar();
-  drawBarChart();
-  buildTabs();
-  buildCalc();
-  initScrollAnimations();
-});
+    <section class="px-4 pt-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <select id="boardSel" class="glass rounded-xl px-3 py-2 text-sm"></select>
+        <button id="addListBtn" class="glass rounded-xl px-3 py-2 text-sm">+ Liste</button>
+      </div>
+      <div id="memberRow" class="flex items-center gap-2"></div>
+    </section>
 
-// Redraw charts on resize
-var resizeTimer;
-window.addEventListener('resize', function() {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(function() {
-    drawRadar();
-    drawBarChart();
-  }, 200);
-});
-</script>
+    <main id="boardWrap" class="flex-1 overflow-auto p-4">
+      <div id="lists" class="flex gap-4 items-start pb-8"></div>
+    </main>
+  </div>
+
+  <dialog id="cardModal" class="w-[min(920px,96vw)] rounded-2xl p-0 bg-transparent">
+    <div class="glass neon-border rounded-2xl p-4 md:p-6 text-sm">
+      <div class="flex justify-between items-center mb-3"><h2 class="text-xl font-bold" id="mTitle"></h2><button onclick="cardModal.close()">✕</button></div>
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="space-y-3">
+          <input id="mCardTitle" class="w-full glass rounded-xl px-3 py-2" placeholder="Titel">
+          <textarea id="mDesc" class="w-full h-28 glass rounded-xl px-3 py-2" placeholder="Beschreibung (Markdown)"></textarea>
+          <div class="markdown glass rounded-xl p-3 min-h-16" id="mPreview"></div>
+          <input id="mDue" type="date" class="glass rounded-xl px-3 py-2">
+          <input id="mLabels" placeholder="Labels, comma-separated" class="w-full glass rounded-xl px-3 py-2">
+          <input id="mImg" placeholder="Bild-URL" class="w-full glass rounded-xl px-3 py-2">
+        </div>
+        <div class="space-y-3">
+          <div class="glass rounded-xl p-3">
+            <div class="flex justify-between"><strong>Checkliste</strong><button id="addCheck">+ Item</button></div>
+            <div id="checklist" class="mt-2 space-y-2"></div>
+          </div>
+          <div class="glass rounded-xl p-3">
+            <div class="flex justify-between"><strong>Kommentare</strong><button id="addComment">+ Kommentar</button></div>
+            <div id="comments" class="mt-2 space-y-2 max-h-40 overflow-auto"></div>
+            <input id="commentInput" class="w-full glass rounded-xl px-3 py-2 mt-2" placeholder="Kommentar schreiben...">
+          </div>
+          <button id="saveCard" class="w-full rounded-xl py-2 bg-cyan-400/80 text-black font-bold">Speichern</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <script>
+    const THEMES = {
+      Aurora: ['#0b1024', '#1f194f', '#0f766e'],
+      Cosmos: ['#020617', '#1e1b4b', '#581c87'],
+      Sunset: ['#1f2937', '#7c2d12', '#be123c'],
+      Forest: ['#052e16', '#14532d', '#134e4a'],
+      Cyber: ['#030712', '#0c4a6e', '#831843'],
+      'Minimal-Light': ['#f8fafc', '#dbeafe', '#fce7f3']
+    };
+    const TEMPLATES = {
+      Kanban: ['Backlog', 'In Arbeit', 'Review', 'Done'],
+      Sprint: ['Sprint Backlog', 'To Do', 'Doing', 'Testing', 'Done'],
+      OKRs: ['Objectives', 'Key Results', 'Initiativen', 'Erledigt'],
+      'Sales-Pipeline': ['Lead', 'Qualified', 'Proposal', 'Negotiation', 'Won']
+    };
+
+    const uid = () => Math.random().toString(36).slice(2, 9);
+    const $ = (s) => document.querySelector(s);
+    const state = {
+      mode: 'dark',
+      theme: 'Aurora',
+      members: [
+        {name:'Mia', color:'#22d3ee'},
+        {name:'Noah', color:'#a78bfa'},
+        {name:'Lea', color:'#f472b6'}
+      ],
+      boards: [],
+      activeBoardId: null,
+      activeCardRef: null
+    };
+
+    function makeDemoCards(){
+      const pool = [
+        'Landing Hero überarbeiten','Pricing Section optimieren','Onboarding Flow testen','Retargeting-Kampagne planen','Kundeninterview #42 auswerten',
+        'Bug: Login Timeout','Animation Timing verbessern','Roadmap Q3 finalisieren','Partner Deal vorbereiten','Support Macro schreiben',
+        'Referral Programm entwerfen','Widget Performance auditieren','SEO Snippets updaten','AB-Test: CTA Farbe','Mobile Nav neu denken',
+        'API-Rate-Limit monitoren','Sales Deck polieren','Changelog v2.8 schreiben','Beta-Liste kuratieren','Customer Journey Map'
+      ];
+      return pool.map((title, i) => ({
+        id: uid(), title, desc: `**${title}**\n\n- Owner: Team\n- Priorität: ${['Low','Medium','High'][i%3]}`,
+        labels: [ ['Design','UX'], ['Growth','Marketing'], ['Tech','Bugfix'], ['Sales','Ops'] ][i%4],
+        due: `2026-0${(i%8)+1}-${String((i%26)+1).padStart(2,'0')}`,
+        checklist: [{id:uid(), text:'Kickoff', done:i%2===0}, {id:uid(), text:'Review', done:i%5===0}],
+        comments: [{id:uid(), text:'Sieht stark aus 🚀', at:new Date().toISOString()}],
+        image: i%4===0 ? `https://picsum.photos/seed/card${i}/600/300` : ''
+      }));
+    }
+
+    function initData(){
+      const saved = localStorage.getItem('neonBoards.v1');
+      if (saved) Object.assign(state, JSON.parse(saved));
+      else {
+        const demo = makeDemoCards();
+        const board = {
+          id: uid(), name: 'Demo Board', template: 'Kanban',
+          lists: TEMPLATES.Kanban.map((n, idx) => ({id:uid(), name:n, cards:[]}))
+        };
+        demo.forEach((c, i) => board.lists[i % board.lists.length].cards.push(c));
+        state.boards = [board];
+        state.activeBoardId = board.id;
+      }
+      if (!state.activeBoardId && state.boards[0]) state.activeBoardId = state.boards[0].id;
+    }
+
+    const save = () => localStorage.setItem('neonBoards.v1', JSON.stringify(state));
+    const activeBoard = () => state.boards.find(b => b.id === state.activeBoardId);
+
+    function applyTheme(){
+      const [a,b,c] = THEMES[state.theme] || THEMES.Aurora;
+      document.documentElement.style.setProperty('--bg1', a);
+      document.documentElement.style.setProperty('--bg2', b);
+      document.documentElement.style.setProperty('--bg3', c);
+      document.body.classList.toggle('light', state.mode === 'light' || state.theme === 'Minimal-Light');
+    }
+
+    function renderTop(){
+      $('#themeSel').innerHTML = Object.keys(THEMES).map(t => `<option ${t===state.theme?'selected':''}>${t}</option>`).join('');
+      $('#boardSel').innerHTML = state.boards.map(b => `<option value="${b.id}" ${b.id===state.activeBoardId?'selected':''}>${b.name}</option>`).join('');
+      $('#memberRow').innerHTML = state.members.map(m => `<div title="${m.name}" class="w-8 h-8 rounded-full border border-white/40 grid place-items-center text-xs font-bold" style="background:${m.color}">${m.name[0]}</div>`).join('');
+    }
+
+    function confetti(x,y){
+      for(let i=0;i<22;i++){
+        const d = document.createElement('div');
+        d.className = 'confetti';
+        d.style.background = ['#22d3ee','#f472b6','#a3e635','#f59e0b'][i%4];
+        document.body.appendChild(d);
+        gsap.set(d,{x,y,rotate:Math.random()*360,scale:Math.random()*1.2+.6});
+        gsap.to(d,{x:x+(Math.random()-0.5)*260,y:y-(Math.random()*220+50),duration:.45,ease:'power2.out'});
+        gsap.to(d,{y:y+220,opacity:0,rotate:'+=240',delay:.45,duration:.9,ease:'power1.in',onComplete:()=>d.remove()});
+      }
+    }
+
+    function renderBoard(){
+      const board = activeBoard(); if(!board) return;
+      const wrap = $('#lists');
+      wrap.innerHTML = board.lists.map(list => `
+        <article class="board-col glass rounded-2xl p-3" data-list="${list.id}" ondragover="event.preventDefault()" ondrop="dropCard(event,'${list.id}')">
+          <div class="flex items-center justify-between mb-2"><h3 class="font-bold">${list.name}</h3><button onclick="addCard('${list.id}')">+ Karte</button></div>
+          <div class="space-y-2 min-h-8">
+            ${list.cards.map(card => `
+              <div class="card-tilt glass rounded-xl p-2 text-sm" draggable="true" data-card="${card.id}" data-list="${list.id}" onclick="openCard('${list.id}','${card.id}')" ondragstart="dragCard(event,'${list.id}','${card.id}')" onmousemove="tilt(event,this)" onmouseleave="untilt(this)">
+                ${card.image ? `<img src="${card.image}" class="w-full h-24 object-cover rounded-lg mb-2" />` : ''}
+                <div class="font-semibold">${card.title}</div>
+                <div class="flex gap-1 flex-wrap mt-1">${(card.labels||[]).map(l=>`<span class='text-[10px] px-2 py-0.5 rounded-full bg-white/10'>${l}</span>`).join('')}</div>
+                <div class="mt-1 text-[11px] opacity-75">Due: ${card.due || '—'}</div>
+              </div>`).join('')}
+          </div>
+        </article>
+      `).join('');
+
+      gsap.from('.board-col',{opacity:0,y:24,stagger:.06,duration:.45,ease:'back.out(1.8)'});
+      gsap.from('.card-tilt',{opacity:0,scale:.96,stagger:.015,duration:.34,ease:'power2.out'});
+    }
+
+    function addBoard(name='Neues Board', template='Kanban'){
+      const lists = (TEMPLATES[template]||TEMPLATES.Kanban).map(n=>({id:uid(),name:n,cards:[]}));
+      const board = {id:uid(), name, template, lists};
+      state.boards.push(board); state.activeBoardId = board.id;
+      sync();
+    }
+
+    function addList(){
+      const n = prompt('Listenname?', 'Neue Liste'); if(!n) return;
+      activeBoard().lists.push({id:uid(), name:n, cards:[]});
+      sync();
+    }
+
+    function addCard(listId){
+      const t = prompt('Kartentitel?', 'Neue Aufgabe'); if(!t) return;
+      const list = activeBoard().lists.find(l=>l.id===listId);
+      list.cards.unshift({id:uid(),title:t,desc:'',labels:[],due:'',checklist:[],comments:[],image:''});
+      sync();
+    }
+
+    let drag = null;
+    window.dragCard = (e,listId,cardId) => {
+      drag = {listId, cardId};
+      e.currentTarget.classList.add('dragging');
+      setTimeout(()=>e.currentTarget.classList.remove('dragging'), 350);
+    }
+    window.dropCard = (e,targetListId) => {
+      if(!drag) return;
+      const b = activeBoard();
+      const src = b.lists.find(l=>l.id===drag.listId);
+      const dst = b.lists.find(l=>l.id===targetListId);
+      const ix = src.cards.findIndex(c=>c.id===drag.cardId);
+      if(ix<0) return;
+      const [card] = src.cards.splice(ix,1); dst.cards.unshift(card);
+      drag = null; sync();
+    }
+
+    window.tilt = (e,el) => {
+      const r = el.getBoundingClientRect();
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      const rx = -(y/r.height - .5)*8, ry = (x/r.width - .5)*10;
+      el.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(0)`;
+    }
+    window.untilt = (el) => el.style.transform = '';
+
+    window.openCard = (listId, cardId) => {
+      const list = activeBoard().lists.find(l=>l.id===listId);
+      const card = list.cards.find(c=>c.id===cardId);
+      state.activeCardRef = {listId, cardId};
+      $('#mTitle').textContent = 'Karte bearbeiten';
+      $('#mCardTitle').value = card.title;
+      $('#mDesc').value = card.desc || '';
+      $('#mPreview').innerHTML = marked.parse(card.desc || '');
+      $('#mDue').value = card.due || '';
+      $('#mLabels').value = (card.labels||[]).join(', ');
+      $('#mImg').value = card.image || '';
+      $('#checklist').innerHTML = (card.checklist||[]).map(c => `<label class='flex items-center gap-2'><input type='checkbox' ${c.done?'checked':''} onchange="toggleCheck('${c.id}',this.checked,event)"><span>${c.text}</span></label>`).join('');
+      $('#comments').innerHTML = (card.comments||[]).map(c => `<div class='glass rounded-lg p-2'>${c.text}<div class='text-[10px] opacity-60 mt-1'>${new Date(c.at).toLocaleString()}</div></div>`).join('');
+      cardModal.showModal();
+      gsap.from('#cardModal > div',{scale:.92,opacity:0,duration:.25,ease:'power2.out'});
+    }
+
+    window.toggleCheck = (id, done, ev) => {
+      const {listId, cardId} = state.activeCardRef;
+      const card = activeBoard().lists.find(l=>l.id===listId).cards.find(c=>c.id===cardId);
+      const item = card.checklist.find(i=>i.id===id); item.done = done;
+      if(done) confetti(ev.clientX, ev.clientY);
+      save();
+    }
+
+    function currentCard(){
+      if(!state.activeCardRef) return null;
+      const {listId, cardId} = state.activeCardRef;
+      return activeBoard().lists.find(l=>l.id===listId).cards.find(c=>c.id===cardId);
+    }
+
+    function sync(){ renderTop(); renderBoard(); applyTheme(); save(); }
+
+    // Events
+    $('#newBoardBtn').onclick = () => addBoard(prompt('Board Name?', 'Neon Project') || 'Neon Project');
+    $('#addListBtn').onclick = addList;
+    $('#boardSel').onchange = e => { state.activeBoardId = e.target.value; sync(); };
+    $('#themeSel').onchange = e => { state.theme = e.target.value; sync(); };
+    $('#modeBtn').onclick = () => { state.mode = state.mode === 'dark' ? 'light' : 'dark'; sync(); };
+    $('#templateBtn').onclick = () => {
+      const t = prompt('Template: Kanban, Sprint, OKRs, Sales-Pipeline', 'Sprint');
+      if(!TEMPLATES[t]) return alert('Unbekanntes Template');
+      addBoard(`${t} Board`, t);
+    }
+    $('#exportBtn').onclick = () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `neon-boards-${Date.now()}.json`; a.click();
+    };
+    $('#importInput').onchange = async (e) => {
+      const file = e.target.files[0]; if(!file) return;
+      const txt = await file.text();
+      const obj = JSON.parse(txt);
+      Object.assign(state, obj); sync();
+    };
+
+    $('#mDesc').oninput = e => $('#mPreview').innerHTML = marked.parse(e.target.value || '');
+    $('#addCheck').onclick = () => {
+      const txt = prompt('Checklist Item?', 'Neue Teilaufgabe'); if(!txt) return;
+      const c = currentCard(); c.checklist ||= []; c.checklist.push({id:uid(), text:txt, done:false});
+      openCard(state.activeCardRef.listId, state.activeCardRef.cardId);
+    };
+    $('#addComment').onclick = () => {
+      const input = $('#commentInput'); if(!input.value.trim()) return;
+      const c = currentCard(); c.comments ||= []; c.comments.push({id:uid(), text:input.value.trim(), at:new Date().toISOString()});
+      input.value = ''; openCard(state.activeCardRef.listId, state.activeCardRef.cardId);
+    };
+    $('#saveCard').onclick = () => {
+      const c = currentCard();
+      c.title = $('#mCardTitle').value.trim() || 'Untitled';
+      c.desc = $('#mDesc').value;
+      c.due = $('#mDue').value;
+      c.labels = $('#mLabels').value.split(',').map(s=>s.trim()).filter(Boolean);
+      c.image = $('#mImg').value.trim();
+      cardModal.close();
+      sync();
+      gsap.fromTo('[data-card="'+c.id+'"]',{scale:.92},{scale:1,duration:.3,ease:'back.out(1.8)'});
+    }
+
+    // Custom cursor
+    const ring = document.querySelector('.cursor-ring');
+    const dot = document.querySelector('.cursor-dot');
+    let mx=innerWidth/2,my=innerHeight/2,rx=mx,ry=my;
+    window.addEventListener('mousemove', e => {mx=e.clientX;my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px';});
+    gsap.ticker.add(()=>{ rx += (mx-rx)*0.2; ry += (my-ry)*0.2; ring.style.left=rx+'px'; ring.style.top=ry+'px'; });
+
+    // Init
+    initData();
+    sync();
+  </script>
 </body>
 </html>
